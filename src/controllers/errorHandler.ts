@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { ErrorCodes, HTTPException } from "../exceptions/root";
-import { internalException } from "../exceptions/internal-exception";
+import { ErrorCodes, HTTPException } from "../exceptions/HTTPException";
+import { InternalException } from "../exceptions/internalException";
 
 export const errorHandler = (method: Function) => {
   return async function (req: Request, res: Response, next: NextFunction) {
@@ -11,10 +11,9 @@ export const errorHandler = (method: Function) => {
       if (err instanceof HTTPException) {
         exception = err;
       } else {
-        exception = new internalException(
+        exception = new InternalException(
           "Something went wrong",
           ErrorCodes.INTERNAL_ERROR,
-          500,
           err
         );
       }

@@ -1,3 +1,4 @@
+// import "./types/express";
 import express, { Express, Request, Response } from "express";
 import rootRouter from "./routes";
 import { PORT } from "./secrets";

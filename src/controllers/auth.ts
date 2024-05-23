@@ -4,7 +4,8 @@ import jwt from "jsonwebtoken";
 import { prisma } from "..";
 import { JWT_PUBLIC_KEY } from "../secrets";
 import { BadRequestException } from "../exceptions/badRequest";
-import { ErrorCodes } from "../exceptions/root";
+import { ErrorCodes } from "../exceptions/HTTPException";
+import { InvalidCredentials } from "../exceptions/invalidCredentials";
 
 export const Signup = async (
   req: Request,
@@ -41,18 +42,28 @@ export const Login = async (
   const user = await prisma.user.findFirst({ where: { email } });
 
   if (!user) {
-    throw new BadRequestException(
+    throw new InvalidCredentials(
       "Invalid credentials",
       ErrorCodes.INVALID_PASSWORD
     );
   }
 
   if (compareSync(password as string, user!.password) === false) {
-    throw new BadRequestException(
+    throw new InvalidCredentials(
       "Invalid credentials",
       ErrorCodes.INVALID_PASSWORD
     );
   }
 
-  res.json("Login");
+  const payload = { sub: user.id };
+  const token = jwt.sign(payload, JWT_PUBLIC_KEY!);
+
+  res.json({
+    user,
+    token,
+  });
+};
+
+export const me = async (req: Request, res: Response) => {
+  res.json(req.user);
 };

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { HTTPException } from "../exceptions/root";
+import { HTTPException } from "../exceptions/HTTPException";
 
 export const globalErrorMiddleware = (
   err: HTTPException,
