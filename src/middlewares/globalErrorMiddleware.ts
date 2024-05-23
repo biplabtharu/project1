@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { HTTPException } from "../exceptions/root";
 
-export const errorMiddleware = (
+export const globalErrorMiddleware = (
   err: HTTPException,
   req: Request,
   res: Response,

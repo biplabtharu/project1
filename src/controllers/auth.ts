@@ -15,11 +15,9 @@ export const Signup = async (
 
   const user = await prisma.user.findFirst({ where: { email } });
   if (user) {
-    next(
-      new BadRequestException(
-        "User already exists",
-        ErrorCodes.USER_ALREADY_EXISTS
-      )
+    throw new BadRequestException(
+      "User already exists",
+      ErrorCodes.USER_ALREADY_EXISTS
     );
   }
 
@@ -27,7 +25,7 @@ export const Signup = async (
     data: {
       name: name,
       email: email,
-      password: hashSync(password, 10),
+      password: hashSync(password as string, 10),
     },
   });
   res.json(saveUser);
@@ -43,23 +41,17 @@ export const Login = async (
   const user = await prisma.user.findFirst({ where: { email } });
 
   if (!user) {
-    next(
-      new BadRequestException(
-        "Invalid credentials",
-        ErrorCodes.INVALID_PASSWORD
-      )
+    throw new BadRequestException(
+      "Invalid credentials",
+      ErrorCodes.INVALID_PASSWORD
     );
-    return;
   }
 
-  if (compareSync(password, user!.password) === false) {
-    next(
-      new BadRequestException(
-        "Invalid credentials",
-        ErrorCodes.INVALID_PASSWORD
-      )
+  if (compareSync(password as string, user!.password) === false) {
+    throw new BadRequestException(
+      "Invalid credentials",
+      ErrorCodes.INVALID_PASSWORD
     );
-    return;
   }
 
   res.json("Login");
